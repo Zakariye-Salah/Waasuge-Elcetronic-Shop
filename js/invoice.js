@@ -98,7 +98,7 @@ function buildCustomerContactMessage(summary) {
     summary?.lastVisit ? `Last visit: ${summary.lastVisit}` : "",
     `Shop Phone: ${SHOP_PHONE}`,
     `Track your ID in the website: ${window.location.origin}`,
-    `Nasoo booqo: ${window.location.origin}`,
+    ` https://waasuge-electricity.netlify.app/`,
     `— ${SHOP_NAME}`,
   ].filter(Boolean).join("\n");
 }
@@ -1246,7 +1246,7 @@ function buildMessage(invoice, channel = "whatsapp") {
   const ussd = `${PAYMENT_SHORTCODE}${Math.max(1, Math.round(total))}#`;
   const footer = `${SHOP_NAME} (${SHOP_PHONE})`;
 
-  const websiteLine = "Nasoo booqo: https://waasuge-electricity.netlify.app/";
+  const websiteLine = " https://waasuge-electricity.netlify.app/";
 
   if (status === "paid") {
     return [
