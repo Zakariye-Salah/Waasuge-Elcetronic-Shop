@@ -908,12 +908,8 @@ function renderRepair(repair, repairs = lastRepairCollection) {
     ["Repair ID", repairId || "—", "bi-upc-scan"],
     ["Brand", brand, "bi-tags"],
     ["Model", model, "bi-phone-vibrate"],
-    ["Serial / IMEI", serial, "bi-fingerprint"],
-    ["Shop Name", shopName, "bi-shop"],
-    ["Shop Phone", shopPhone, "bi-telephone-fill"],
     ["Received Date", receivedDate, "bi-calendar2-event"],
     ["Estimated Completion", estimatedDate, "bi-calendar2-check"],
-    ["Email", email, "bi-envelope"],
     ["Working Hours", hours, "bi-clock-history"]
   ].map(([label, value, icon]) => `
       <div class="tracking-info-row">
@@ -1063,6 +1059,7 @@ function bindForms() {
         if (item.input) item.input.value = value;
       });
       await handleTrack(input);
+      closeDesktopSearch();
       if (window.bootstrap?.Offcanvas) {
         const mobileMenu = document.getElementById("mobileMenu");
         const instance = mobileMenu ? window.bootstrap.Offcanvas.getInstance(mobileMenu) : null;
@@ -1074,6 +1071,69 @@ function bindForms() {
       const mobileSearchToggle = document.getElementById("mobileSearchToggleBtn");
       if (mobileSearchToggle) mobileSearchToggle.setAttribute("aria-expanded", "false");
     });
+  });
+}
+
+function setDesktopSearchOpen(open) {
+  const isDesktop = window.matchMedia("(min-width: 992px)").matches;
+  const nextOpen = Boolean(open) && isDesktop;
+  document.body.classList.toggle("desktop-search-open", nextOpen);
+
+  const toggleBtn = document.getElementById("desktopSearchToggleBtn");
+  if (toggleBtn) toggleBtn.setAttribute("aria-expanded", String(nextOpen));
+
+  const icon = document.getElementById("desktopSearchToggleIcon");
+  if (icon) icon.className = `bi ${nextOpen ? "bi-chevron-right" : "bi-arrow-right-circle"}`;
+
+  const input = document.getElementById("topTrackInput");
+  if (nextOpen && input) {
+    window.requestAnimationFrame(() => {
+      try { input.focus({ preventScroll: true }); } catch { input.focus(); }
+    });
+  }
+}
+
+function openDesktopSearch() {
+  setDesktopSearchOpen(true);
+}
+
+function closeDesktopSearch() {
+  setDesktopSearchOpen(false);
+}
+
+function bindDesktopSearch() {
+  const toggleBtn = document.getElementById("desktopSearchToggleBtn");
+  const input = document.getElementById("topTrackInput");
+  const form = document.getElementById("topTrackForm");
+  if (!toggleBtn || !input || !form) return;
+
+  const open = () => openDesktopSearch();
+  const close = () => closeDesktopSearch();
+
+  toggleBtn.addEventListener("click", () => {
+    const isOpen = document.body.classList.contains("desktop-search-open");
+    if (isOpen) close();
+    else open();
+  });
+
+  input.addEventListener("focus", open);
+  input.addEventListener("click", open);
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!document.body.classList.contains("desktop-search-open")) return;
+    const within = event.target.closest?.("#desktopHeaderShell");
+    if (!within) close();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth < 992) close();
   });
 }
 
@@ -1121,6 +1181,7 @@ function bindNav() {
   links.forEach((link) => {
     link.addEventListener("click", () => {
       setActive(link.dataset.navLink);
+      closeDesktopSearch();
       const mobileMenu = document.getElementById("mobileMenu");
       const instance = mobileMenu ? window.bootstrap?.Offcanvas.getInstance(mobileMenu) : null;
       if (instance) instance.hide();
@@ -1130,6 +1191,7 @@ function bindNav() {
   window.addEventListener("hashchange", () => {
     const current = (location.hash || "#home").replace("#", "");
     setActive(current);
+    closeDesktopSearch();
   });
 
   const year = document.getElementById("yearNow");
@@ -1294,6 +1356,7 @@ function initPage() {
   bindRatingForm();
   bindTrackFieldSync();
   bindAutoScrollToTracking();
+  bindDesktopSearch();
   bindMobileSearchToggle();
   initAuthListener();
   renderEmptyState();
