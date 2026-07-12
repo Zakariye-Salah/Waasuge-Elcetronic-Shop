@@ -1250,10 +1250,9 @@ function buildMessage(invoice, channel = "whatsapp") {
 
   if (status === "paid") {
     return [
-      `Asc ${name} Phone: ${phone}`,
+      `Asc ${name} : ${phone}`,
       `Invoice No: ${invoiceNo}`,
-      `Status: Paid`,
-      `Bixisay: ${paidText}`,
+      `Status: Paid`, `Bixisay: ${paidText}`,
       `Mahadsanid`,
       websiteLine,
       footer
@@ -1262,12 +1261,11 @@ function buildMessage(invoice, channel = "whatsapp") {
 
   if (status === "partial") {
     return [
-      `Asc ${name} Phone: ${phone}`,
+      `Asc ${name} : ${phone}`,
       `Invoice No: ${invoiceNo}`,
-      `Status: Partial`,
-      `Total: ${totalText}`,
+      `Status: Partial`,`Total: ${totalText}`,
       `Discount: ${discountText}`,
-      `Bixisay: ${paidText} Kugu hartay: ${remainingText}`,
+      `Bixisay: ${paidText} Haraaga Hada: ${remainingText}`,
       ussd,
       `Waad ku mahadsantahay adeegaaga`,
       websiteLine,
@@ -1276,11 +1274,10 @@ function buildMessage(invoice, channel = "whatsapp") {
   }
 
   return [
-    `Asc ${name} Phone: ${phone}`,
+    `Asc ${name} : ${phone}`,
     `Invoice No: ${invoiceNo}`,
-    `Status: Unpaid`,
-    `Total: ${totalText}`,
-    `Kugu hartay: ${remainingText}`,
+    `Status: Unpaid`, `Total: ${totalText}`,
+    `Haraaga: ${remainingText}`,
     ussd,
     `Waad ku mahadsantahay adeegaaga`,
     websiteLine,
