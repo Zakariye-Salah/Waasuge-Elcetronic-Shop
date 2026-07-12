@@ -986,7 +986,7 @@ function buildCustomerContactMessage(summary) {
     summary?.lastVisit ? `Last visit: ${summary.lastVisit}` : "",
     `Shop Phone: 0617125558`,
     `Track your ID in the website: ${window.location.origin}`,
-    `Nasoo booqo: ${window.location.origin}`,
+    ` https://waasuge-electricity.netlify.app/`,
   ].filter(Boolean).join("\n");
 }
 
