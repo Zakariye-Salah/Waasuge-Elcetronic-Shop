@@ -1222,7 +1222,7 @@ function observeRevealTargets(scope = document) {
 function bindMobileSearchToggle() {
   const button = document.getElementById("mobileSearchToggleBtn");
   const input = document.getElementById("mobileHeaderTrackInput");
-  const panel = document.querySelector(".mobile-search-panel");
+  const panel = document.getElementById("mobileHeaderTrackForm")?.closest(".mobile-search-panel") || document.querySelector(".mobile-search-panel.d-lg-none");
   if (!button) return;
 
   const syncIcon = (open) => {
