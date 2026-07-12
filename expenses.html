@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Electronic Shop | Expenses</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<link href="./css/style.css" rel="stylesheet"/>
+<link href="./css/expenses.css" rel="stylesheet"/>
+</head>
+<body class="expense-page">
+<header class="app-header sticky-top shadow-sm bg-white border-bottom">
+<div class="container-fluid py-2 px-3 px-lg-4">
+<div class="d-flex align-items-center justify-content-between gap-3">
+
+<div class="d-flex align-items-center gap-3">
+
+<div class="d-flex align-items-center gap-2">
+<div class="app-logo rounded-3 d-flex align-items-center justify-content-center bg-primary text-white" style="width:42px;height:42px;">
+<i class="bi bi-cash-coin"></i>
+</div>
+<div class="lh-sm">
+<div class="fw-bold">Electronic Shop</div>
+<small class="text-muted">Expenses Module</small>
+</div>
+</div>
+</div>
+<div class="d-flex align-items-center gap-2 gap-md-3">
+<button aria-label="Toggle theme" class="btn btn-light border rounded-circle" id="themeToggle" type="button">
+<i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+<div class="dropdown header-more-dropdown">
+<button class="btn btn-light border rounded-circle position-relative header-more-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="More options" data-header-more-toggle="">
+<i class="bi bi-three-dots-vertical"></i>
+</button>
+<ul class="dropdown-menu dropdown-menu-end shadow border-0 header-more-menu">
+<li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#headerProfileModal"><i class="bi bi-person-gear text-primary"></i><span>Edit Profile</span></button></li>
+<li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#headerAboutModal"><i class="bi bi-info-circle text-info"></i><span>About Us</span></button></li>
+<li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#headerDeveloperModal"><i class="bi bi-code-slash text-success"></i><span>Developer</span></button></li>
+<li><hr class="dropdown-divider"></li>
+<li><button class="dropdown-item text-danger" type="button" data-bs-toggle="modal" data-bs-target="#headerLogoutModal"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button></li>
+</ul>
+</div>
+<a aria-label="Back to dashboard" class="btn btn-light border rounded-circle" href="dashboard.html"><i class="bi bi-house"></i></a>
+</div>
+</div>
+</div>
+</header>
+<div aria-labelledby="mobileNavLabel" class="offcanvas offcanvas-start d-lg-none" id="mobileNav" tabindex="-1">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold" id="mobileNavLabel">Menu</h5>
+<button aria-label="Close" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
+</div>
+<div class="offcanvas-body p-3">
+<div class="nav nav-pills flex-column gap-2">
+<a class="nav-link d-flex align-items-center gap-2" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+<a class="nav-link d-flex align-items-center gap-2" href="invoice.html"><i class="bi bi-receipt-cutoff"></i> Invoice</a>
+<a class="nav-link d-flex align-items-center gap-2" href="product.html"><i class="bi bi-box-seam"></i> Products</a>
+<a class="nav-link d-flex align-items-center gap-2" href="repairing.html"><i class="bi bi-tools"></i> Repairing</a>
+<a class="nav-link d-flex align-items-center gap-2 active" href="expenses.html"><i class="bi bi-cash-coin"></i> Expenses</a>
+<a class="nav-link d-flex align-items-center gap-2" href="report.html"><i class="bi bi-bar-chart-line"></i> Reports</a>
+</div>
+</div>
+</div>
+<main class="container-fluid page-wrap px-3 px-lg-4 pb-5" id="expensePage">
+<div class="row g-3 mb-4">
+<div class="col-12 col-lg-8">
+<div class="expense-panel p-4 h-100">
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+<div>
+<div class="expense-tag mb-2"><i class="bi bi-cash-coin"></i> Expenses</div>
+<h1 class="fw-bold mb-1">Manage business expenses</h1>
+<p class="text-muted mb-0">Save, edit, delete, restore, and search expense records from Firebase.</p>
+</div>
+<div class="text-end">
+<div class="small text-muted">Total expense amount</div>
+<div class="fw-bold fs-3" id="totalExpenseAmount">$0.00</div>
+</div>
+</div>
+<div class="row g-3">
+<div class="col-6 col-md-3"><div class="expense-stat"><div class="label">Total Records</div><div class="value" id="totalExpenseCount">0</div></div></div>
+<div class="col-6 col-md-3"><div class="expense-stat"><div class="label">Active</div><div class="value" id="activeExpenseCount">0</div></div></div>
+<div class="col-6 col-md-3"><div class="expense-stat"><div class="label">Trash</div><div class="value" id="deletedExpenseCount">0</div></div></div>
+<div class="col-6 col-md-3"><div class="expense-stat"><div class="label">Result</div><div class="value" id="expenseResultCount">0 records</div></div></div>
+</div>
+</div>
+</div>
+<div class="col-12 col-lg-4">
+<div class="expense-panel p-4 h-100">
+<div class="fw-bold fs-5 mb-2">Expense type breakdown</div>
+<div class="d-flex flex-wrap gap-2" id="expenseTypeSummary"></div>
+</div>
+</div>
+</div>
+<div class="row g-4">
+<div class="col-12 col-xl-4">
+<div class="card expense-card h-100">
+<div class="card-body p-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<div>
+<h5 class="fw-bold mb-1">New Expense</h5>
+<p class="text-muted mb-0 small">Fill in the business expense details.</p>
+</div>
+<i class="bi bi-wallet2 fs-3 text-primary"></i>
+</div>
+<form class="row g-3" id="expenseForm">
+<div class="col-12">
+<label class="form-label fw-semibold">Expense Type</label>
+<select class="form-select" id="expenseType" required=""></select>
+</div>
+<div class="col-12">
+<label class="form-label fw-semibold">Title</label>
+<input class="form-control" id="expenseTitle" placeholder="e.g. Shop Rent" required="" type="text"/>
+</div>
+<div class="col-12 col-md-6 col-xl-12">
+<label class="form-label fw-semibold">Amount</label>
+<input class="form-control" id="expenseAmount" min="0" placeholder="0.00" required="" step="0.01" type="number"/>
+</div>
+<div class="col-12 col-md-6 col-xl-12">
+<label class="form-label fw-semibold">Date</label>
+<input class="form-control" id="expenseDate" required="" type="date"/>
+</div>
+<div class="col-12">
+<label class="form-label fw-semibold">Notes</label>
+<textarea class="form-control" id="expenseNotes" placeholder="Optional notes" rows="4"></textarea>
+</div>
+<div class="col-12 d-flex gap-2">
+<button class="btn btn-primary flex-grow-1" id="saveExpenseBtn" type="submit"><i class="bi bi-plus-circle me-2"></i> Save Expense</button>
+<button class="btn btn-outline-secondary" id="cancelExpenseBtn" type="button"><i class="bi bi-x-circle"></i></button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="col-12 col-xl-8">
+<div class="card expense-card mb-4">
+<div class="card-body p-4">
+<div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+<div>
+<h5 class="fw-bold mb-1">Expense List</h5>
+<p class="text-muted mb-0 small">Search and filter expense records from Firebase.</p>
+</div>
+<div class="d-flex gap-2 flex-wrap">
+<button class="btn btn-outline-primary" id="refreshExpenses"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+<button class="btn btn-outline-secondary" id="resetFilters"><i class="bi bi-funnel me-1"></i> Reset</button>
+</div>
+</div>
+<div class="row g-2 mb-3">
+<div class="col-12 col-md-5"><input class="form-control" id="expenseSearch" placeholder="Search title, type, date, notes" type="search"/></div>
+<div class="col-12 col-md-4"><select class="form-select" id="filterType"></select></div>
+<div class="col-12 col-md-3"><select class="form-select" id="filterStatus"><option value="active">Active</option><option value="deleted">Trash</option><option value="all">All</option></select></div>
+</div>
+<div class="table-responsive d-none d-md-block">
+<table class="table align-middle expense-table mb-0">
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>Amount</th>
+<th>Date</th>
+<th>Notes</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="expenseTableBody"></tbody>
+</table>
+</div>
+<div class="expense-empty d-none mt-3" id="expenseEmpty">
+<i class="bi bi-receipt-cutoff fs-1 text-muted"></i>
+<div class="fw-bold mt-2">No expense records found</div>
+<div class="text-muted small">Add your first expense using the form on the left.</div>
+</div>
+<div class="row g-3 d-md-none mt-1" id="expenseCards"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="mobile-bottom-nav d-lg-none position-fixed bottom-0 start-0 w-100 bg-white border-top shadow-sm">
+<div class="d-flex justify-content-around py-2">
+<a class="text-center text-decoration-none" href="dashboard.html"><div><i class="bi bi-grid-1x2-fill"></i></div><small>Dashboard</small></a>
+<a class="text-center text-decoration-none" href="invoice.html"><div><i class="bi bi-receipt-cutoff"></i></div><small>Invoice</small></a>
+<a class="text-center text-decoration-none" href="product.html"><div><i class="bi bi-box-seam"></i></div><small>Products</small></a>
+<a class="text-center text-decoration-none" href="repairing.html"><div><i class="bi bi-tools"></i></div><small>Repairing</small></a>
+<a class="text-center text-primary text-decoration-none" href="expenses.html"><div><i class="bi bi-cash-coin"></i></div><small>Expenses</small></a>
+</div>
+</nav>
+<script src="./js/expenses.js" type="module"></script>
+<script src="./js/navbar.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
