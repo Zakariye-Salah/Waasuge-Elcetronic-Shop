@@ -888,45 +888,63 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
           <small class="text-muted fw-semibold small" data-i18n="brand.sub">Shop & Mobile Repairing</small>
         </span>
       </a>
-    
-      <div class="mobile-header-actions ms-auto d-flex align-items-center gap-2 position-relative">
+
+      <div class="d-none d-lg-flex align-items-center gap-3 ms-auto flex-grow-1">
+        <div class="navbar-nav flex-row align-items-center justify-content-center gap-2 flex-grow-1">
+          <a class="nav-link custom-link active" href="#home" data-nav-link="home" data-i18n="nav.home">Home</a>
+          <a class="nav-link custom-link" href="#about" data-nav-link="about" data-i18n="nav.about">About Us</a>
+          <a class="nav-link custom-link" href="#services" data-nav-link="services" data-i18n="nav.services">Services</a>
+          <a class="nav-link custom-link" href="#tracking" data-nav-link="tracking" data-i18n="nav.tracking">Tracking</a>
+        </div>
+
+        <form class="search-inline flex-shrink-0" id="topTrackForm">
+          <div class="position-relative">
+            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input class="form-control ps-5" id="topTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
+          </div>
+          <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="topTrackBtn">
+            <i class="bi bi-arrow-right-circle"></i>
+            <span data-i18n="actions.track">Track</span>
+          </button>
+        </form>
+
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <button class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center justify-content-center gap-2 fw-semibold" type="button" id="themeToggleBtn">
+            <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
+          </button>
+          <button class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center justify-content-center gap-2 fw-semibold" type="button" id="langToggleBtn">
+            <i class="bi bi-translate"></i>
+            <span id="langToggleLabel">SO</span>
+          </button>
+          <a class="btn btn-light rounded-pill fw-semibold d-inline-flex align-items-center justify-content-center gap-2" id="accountBtnDesktop" href="login.html">
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span data-auth-label data-i18n="actions.login">Login</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="mobile-header-actions ms-auto d-flex align-items-center gap-2 position-relative d-lg-none">
         <button class="btn btn-outline-secondary mobile-search-toggle d-lg-none" type="button" id="mobileSearchToggleBtn" aria-label="Open search">
           <i class="bi bi-search" id="mobileSearchToggleIcon"></i>
         </button>
-    
+
         <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open menu">
           <span class="navbar-toggler-icon"></span>
         </button>
-    
-        <div class="mobile-search-panel d-lg-none">
-          <form class="search-inline" id="mobileHeaderTrackForm">
-            <div class="position-relative">
-              <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-              <input class="form-control ps-5" id="mobileHeaderTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
-            </div>
-            <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="mobileHeaderTrackBtn">
-              <i class="bi bi-arrow-right-circle"></i>
-              <span data-i18n="actions.track">Track</span>
-            </button>
-          </form>
-        </div>
       </div>
-    
-      <div class="collapse navbar-collapse d-none d-lg-flex align-items-center gap-3">
-        ...
+
+      <div class="mobile-search-panel d-lg-none">
+        <form class="search-inline" id="mobileHeaderTrackForm">
+          <div class="position-relative">
+            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input class="form-control ps-5" id="mobileHeaderTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
+          </div>
+          <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="mobileHeaderTrackBtn">
+            <i class="bi bi-arrow-right-circle"></i>
+            <span data-i18n="actions.track">Track</span>
+          </button>
+        </form>
       </div>
-    </div>
-    <div class="mobile-search-panel d-lg-none">
-      <form class="search-inline" id="mobileHeaderTrackForm">
-        <div class="position-relative">
-          <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-          <input class="form-control ps-5" id="mobileHeaderTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
-        </div>
-        <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="mobileHeaderTrackBtn">
-          <i class="bi bi-arrow-right-circle"></i>
-          <span data-i18n="actions.track">Track</span>
-        </button>
-      </form>
     </div>
   </nav>
 
@@ -1141,7 +1159,41 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
           </div>
         </div></section>
 
-    <section class="page-section section-anchor" id="tracking">
+    
+    <section class="page-section section-anchor" id="services">
+      <div class="container">
+        <div class="text-center mb-4 mb-lg-5">
+          <div class="section-title mb-2" data-i18n="services.title">Services and products</div>
+          <p class="section-subtitle mx-auto mb-0" data-i18n="services.subtitle">We repair devices and sell useful electronics items for home, shop, and mobile use.</p>
+        </div>
+        <div class="row g-3 g-lg-4">
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-phone"></i></div><div><div class="fw-bold fs-5" data-i18n="services.mobileTitle">Mobile phones</div><p class="text-muted mb-0" data-i18n="services.mobileText">Sales, setup, software help, and repair for smartphones and small phones.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-battery-charging"></i></div><div><div class="fw-bold fs-5" data-i18n="services.chargingTitle">Fast charging accessories</div><p class="text-muted mb-0" data-i18n="services.chargingText">Super-fast chargers, adapters, USB cables, and charging ports.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-power"></i></div><div><div class="fw-bold fs-5" data-i18n="services.powerTitle">Power banks & batteries</div><p class="text-muted mb-0" data-i18n="services.powerText">Power banks, batteries, battery replacement, and charging support.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-earbuds"></i></div><div><div class="fw-bold fs-5" data-i18n="services.audioTitle">Earphones and headsets</div><p class="text-muted mb-0" data-i18n="services.audioText">Earphones, headphones, earbuds, and audio accessories.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-lightbulb"></i></div><div><div class="fw-bold fs-5" data-i18n="services.electricTitle">Electricity items</div><p class="text-muted mb-0" data-i18n="services.electricText">LED bulbs, switches, sockets, plugs, extension cords, and wiring accessories.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-tools"></i></div><div><div class="fw-bold fs-5" data-i18n="services.repairTitle">Repair services</div><p class="text-muted mb-0" data-i18n="services.repairText">Screen replacement, charging issues, signal issues, battery faults, and more.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-wifi"></i></div><div><div class="fw-bold fs-5" data-i18n="services.networkTitle">Signal and network</div><p class="text-muted mb-0" data-i18n="services.networkText">Zero signal, network issues, SIM problems, and device troubleshooting.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-display"></i></div><div><div class="fw-bold fs-5" data-i18n="services.smartTitle">Smart devices</div><p class="text-muted mb-0" data-i18n="services.smartText">Smart watches, speakers, chargers, and small smart accessories.</p></div></div></div></div>
+          <div class="col-md-6 col-xl-4"><div class="service-card p-4"><div class="d-flex align-items-start gap-3"><div class="icon-chip"><i class="bi bi-box-seam"></i></div><div><div class="fw-bold fs-5" data-i18n="services.partsTitle">Parts & service</div><p class="text-muted mb-0" data-i18n="services.partsText">Original and compatible parts, service bundles, and repair updates.</p></div></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section section-anchor" id="howto">
+      <div class="container">
+        <div class="text-center mb-4 mb-lg-5">
+          <div class="section-title mb-2" data-i18n="howto.title">How to use the tracking</div>
+          <p class="section-subtitle mx-auto mb-0" data-i18n="howto.subtitle">Type your repair ID, press track, and the page will scroll to the result automatically.</p>
+        </div>
+        <div class="row g-3 g-lg-4">
+          <div class="col-md-4"><div class="step-card p-4 h-100"><div class="step-num mb-3">1</div><div class="fw-bold fs-5 mb-2" data-i18n="howto.step1Title">Enter your repair ID</div><p class="text-muted mb-0" data-i18n="howto.step1Text">Use the repair number you received from the shop.</p></div></div>
+          <div class="col-md-4"><div class="step-card p-4 h-100"><div class="step-num mb-3">2</div><div class="fw-bold fs-5 mb-2" data-i18n="howto.step2Title">Press the track button</div><p class="text-muted mb-0" data-i18n="howto.step2Text">A loading spinner appears while the system looks up your file.</p></div></div>
+          <div class="col-md-4"><div class="step-card p-4 h-100"><div class="step-num mb-3">3</div><div class="fw-bold fs-5 mb-2" data-i18n="howto.step3Title">Read the full repair file</div><p class="text-muted mb-0" data-i18n="howto.step3Text">See status, price, progress, notes, and rating options.</p></div></div>
+        </div>
+      </div>
+    </section>
+<section class="page-section section-anchor" id="tracking">
 
       <div class="container">
         <div class="tracking-box p-4 p-lg-5">
