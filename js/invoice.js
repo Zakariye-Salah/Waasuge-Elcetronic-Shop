@@ -1246,7 +1246,7 @@ function buildMessage(invoice, channel = "whatsapp") {
   const ussd = `${PAYMENT_SHORTCODE}${Math.max(1, Math.round(total))}#`;
   const footer = `${SHOP_NAME} (${SHOP_PHONE})`;
 
-  const websiteLine = "Nasoo booqo: https://study-room-pro.netlify.app/";
+  const websiteLine = "Nasoo booqo: https://waasuge-electricity.netlify.app/";
 
   if (status === "paid") {
     return [
