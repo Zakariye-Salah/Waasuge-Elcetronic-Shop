@@ -1974,7 +1974,7 @@ function buildShareText(repair) {
   const repairId = makeRepairNumber(repair);
   const shopName = "Waasuge Electronics & Mobile Repairing";
   const shopPhone = "0617125558";
-  const website = "https://study-room-pro.netlify.app/";
+  const website = "https://waasuge-electricity.netlify.app/";
   return [
     `Asc ${name},`,
     `Repair ID: ${repairId}`,
