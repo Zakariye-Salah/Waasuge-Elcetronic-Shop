@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Waasuge Electronics & Mobile Repairing</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232563eb%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%237c3aed%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Cpath%20d%3D%22M14%2026h36v24H14z%22%20fill%3D%22%23fff%22%20opacity%3D%22.96%22/%3E%0A%20%20%3Cpath%20d%3D%22M18%2022h28l4%204H14z%22%20fill%3D%22%23fff%22%20opacity%3D%22.92%22/%3E%0A%20%20%3Cpath%20d%3D%22M22%2031h8v10h-8zm12%200h10v10H34z%22%20fill%3D%22%232563eb%22/%3E%0A%20%20%3Cpath%20d%3D%22M27%2013h10v11H27z%22%20fill%3D%22%23fff%22/%3E%0A%20%20%3Cpath%20d%3D%22M30.5%2016.5h3v3h-3z%22%20fill%3D%22%237c3aed%22/%3E%0A%3C/svg%3E" />
   <meta name="description" content="Waasuge Electronics & Mobile Repairing offers professional device repair, electronics sales, accessories, and live tracking for repair IDs." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -311,6 +312,67 @@
     .navbar-top .navbar-nav .nav-link.custom-link{padding:.3rem .56rem;font-size:.82rem}
     .navbar-top .btn{min-height:38px;font-size:.9rem;padding:.46rem .68rem}
     .navbar-top .btn i{font-size:.9rem}
+    .desktop-header-shell{min-width:0}
+    .desktop-nav-links{
+      transition:opacity .24s ease, transform .24s ease, max-width .24s ease;
+    }
+    .desktop-track-form{
+      display:flex;
+      align-items:center;
+      gap:.55rem;
+      max-width:250px;
+      transition:max-width .28s ease, transform .28s ease, opacity .28s ease, flex-basis .28s ease;
+      min-width:0;
+    }
+    .desktop-track-input-wrap{
+      display:flex;
+      align-items:center;
+      width:100%;
+      min-width:0;
+    }
+    .desktop-track-form .form-control{
+      width:100%;
+      min-width:170px;
+      padding-right:3.05rem;
+    }
+    .desktop-search-toggle{
+      position:absolute;
+      right:.28rem;
+      top:50%;
+      transform:translateY(-50%);
+      width:2.1rem;
+      height:2.1rem;
+      border:0;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(37,99,235,.12);
+      color:var(--primary);
+      box-shadow:none;
+      padding:0;
+    }
+    .desktop-search-toggle:hover{background:rgba(37,99,235,.18);color:var(--primary-2)}
+    .desktop-track-submit{display:none;white-space:nowrap}
+    .desktop-theme-btn{
+      width:2.5rem;
+      height:2.5rem;
+      padding:0 !important;
+    }
+    .desktop-theme-btn i{font-size:1rem}
+    body.desktop-search-open .desktop-nav-links,
+    body.desktop-search-open .desktop-action-group{
+      opacity:0;
+      transform:translateY(-6px);
+      pointer-events:none;
+      visibility:hidden;
+    }
+    body.desktop-search-open .desktop-track-form{
+      max-width:min(100%, 560px);
+      flex:1 1 560px;
+    }
+    body.desktop-search-open .desktop-track-submit{display:inline-flex}
+    body.desktop-search-open .desktop-track-form .form-control{min-width:220px}
     .search-inline{max-width:180px;transition:max-width .28s ease, transform .28s ease, opacity .28s ease;overflow:hidden;transform-origin:right center}
     .search-inline:focus-within{max-width:360px;transform:scaleX(1.01)}
     .search-inline .form-control{width:100%;min-width:160px}
@@ -620,7 +682,12 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      color: var(--muted);
     }
+    .mobile-search-toggle:hover{background:rgba(37,99,235,.08);color:var(--primary)}
     .mobile-search-panel {
       display: none;
       padding: 0;
@@ -630,8 +697,8 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
     body.mobile-search-open .mobile-search-panel {
       display: block;
       position: absolute;
-      left: clamp(78px, 17vw, 132px);
-      right: 66px;
+      left: clamp(64px, 14vw, 116px);
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 4;
@@ -882,34 +949,37 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
   <nav class="navbar navbar-expand-lg navbar-light navbar-top glass">
     <div class="container py-2 position-relative d-flex align-items-center gap-2">
       <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#home">
-        <span class="brand-box"><i class="bi bi-lightning-charge-fill"></i></span>
+        <span class="brand-box"><i class="bi bi-shop"></i></span>
         <span class="d-flex flex-column lh-1">
           <span data-i18n="brand.main">Waasuge Electronics</span>
           <small class="text-muted fw-semibold small" data-i18n="brand.sub">Shop & Mobile Repairing</small>
         </span>
       </a>
 
-      <div class="d-none d-lg-flex align-items-center gap-3 ms-auto flex-grow-1">
-        <div class="navbar-nav flex-row align-items-center justify-content-center gap-2 flex-grow-1">
+      <div class="d-none d-lg-flex align-items-center gap-3 ms-auto flex-grow-1 desktop-header-shell" id="desktopHeaderShell">
+        <div class="navbar-nav flex-row align-items-center justify-content-center gap-2 flex-grow-1 desktop-nav-links" id="desktopNavLinks">
           <a class="nav-link custom-link active" href="#home" data-nav-link="home" data-i18n="nav.home">Home</a>
           <a class="nav-link custom-link" href="#about" data-nav-link="about" data-i18n="nav.about">About Us</a>
           <a class="nav-link custom-link" href="#services" data-nav-link="services" data-i18n="nav.services">Services</a>
           <a class="nav-link custom-link" href="#tracking" data-nav-link="tracking" data-i18n="nav.tracking">Tracking</a>
         </div>
 
-        <form class="search-inline flex-shrink-0" id="topTrackForm">
-          <div class="position-relative">
+        <form class="search-inline flex-shrink-0 desktop-track-form" id="topTrackForm">
+          <div class="position-relative desktop-track-input-wrap">
             <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
             <input class="form-control ps-5" id="topTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
+            <button class="btn desktop-search-toggle" type="button" id="desktopSearchToggleBtn" aria-label="Toggle search" aria-expanded="false">
+              <i class="bi bi-arrow-right-circle" id="desktopSearchToggleIcon"></i>
+            </button>
           </div>
-          <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="topTrackBtn">
-            <i class="bi bi-arrow-right-circle"></i>
+          <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2 desktop-track-submit" type="submit" id="topTrackBtn">
+            <i class="bi bi-search"></i>
             <span data-i18n="actions.track">Track</span>
           </button>
         </form>
 
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-          <button class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center justify-content-center gap-2 fw-semibold" type="button" id="themeToggleBtn">
+        <div class="d-flex align-items-center gap-2 flex-shrink-0 desktop-action-group" id="desktopActionGroup">
+          <button class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center justify-content-center fw-semibold desktop-theme-btn" type="button" id="themeToggleBtn" aria-label="Dark mode">
             <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
           </button>
           <button class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center justify-content-center gap-2 fw-semibold" type="button" id="langToggleBtn">
@@ -947,8 +1017,7 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
       </div>
     </div>
   </nav>
-
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
     <div class="offcanvas-header border-bottom">
       <div>
         <h5 class="offcanvas-title fw-bold mb-0" id="mobileMenuLabel" data-i18n="menu.title">Menu</h5>
@@ -1272,7 +1341,7 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
         <div class="row g-4">
           <div class="col-md-6 col-lg-5">
             <div class="d-flex align-items-center gap-3 mb-3">
-              <span class="brand-box"><i class="bi bi-lightning-charge-fill"></i></span>
+              <span class="brand-box"><i class="bi bi-shop"></i></span>
               <div>
                 <div class="fw-bold fs-5">Waasuge Electronics & Mobile Repairing</div>
                 <div class="text-muted small">Professional service for customers.</div>
