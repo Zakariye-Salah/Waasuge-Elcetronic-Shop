@@ -1123,8 +1123,7 @@ Device: ${device}
 Status: ${status}
 Total: ${total}
 Bixisay: ${paid}
-Waasuge Electricity
-0617125558`;
+Waasuge Electricity:(0617125558)`;
   }
   return `Asc ${name}
 Repair ID: ${repairId}
@@ -1132,9 +1131,8 @@ Device: ${device}
 Status: ${status}
 Total: ${total}
 Bixisay: ${paid}
-Kugu hartay: ${balance}
-Waasuge Electricity
-0617125558`;
+Haraaga: ${balance}
+Waasuge Electricity:(0617125558)`;
 }
 
 
@@ -1981,14 +1979,11 @@ function buildShareText(repair) {
     `Device: ${device}`,
     `Current status: ${status}`,
     `Total: ${total}`,
-    `Paid: ${paid}`,
-    `Balance: ${balance}`,
-    `Shop name: ${shopName}`,
-    `Shop phone: ${shopPhone}`,
+    `Bxisay: ${paid}`,
+    `Haraaga: ${balance}`,
+    `Dukaanka: ${shopName}`, `: ${shopPhone}`,
     `Track your ID on the website: ${website}`,
-    `Please use the website to follow the repair progress.`,
-    `Fadlan ka raadi repair ID-gaaga websaytka.`
-  ].join("\n");
+    ].join("\n");
 }
 
 function openShareLink(repair, kind) {
