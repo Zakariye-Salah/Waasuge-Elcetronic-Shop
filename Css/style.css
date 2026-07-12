@@ -2443,3 +2443,160 @@ body.dark-mode .mini-badge{background:rgba(15,23,42,.72)}
 .customer-suggestion-item:hover {
   background: rgba(37, 99, 235, 0.08);
 }
+
+
+/* Public repair tracking info rows */
+.tracking-info-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:.85rem;
+  padding:.72rem .82rem;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.12);
+  background:rgba(148,163,184,.08);
+  min-width:0;
+}
+body.dark-mode .tracking-info-row{
+  background:rgba(148,163,184,.10);
+}
+.tracking-info-label{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  color:var(--muted);
+  font-weight:700;
+  flex:0 0 auto;
+}
+.tracking-info-label i{
+  color:var(--primary);
+}
+.tracking-info-row strong{
+  font-weight:800;
+  text-align:right;
+  min-width:0;
+  overflow-wrap:anywhere;
+  flex:1 1 auto;
+}
+
+@media (max-width: 767.98px) {
+  .tracking-info-row,
+  .info-row,
+  .tracking-detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.38rem;
+    padding: 0.9rem 0.95rem;
+  }
+
+  .tracking-info-row strong,
+  .info-row strong,
+  .tracking-detail-item strong {
+    width: 100%;
+    text-align: left;
+    display: block;
+  }
+
+  .tracking-info-label {
+    width: 100%;
+  }
+
+  .tracking-info-card,
+  .tracking-status-card,
+  .tracking-compact-card {
+    border-radius: 18px;
+  }
+
+  .repair-whatsapp-float {
+    right: 0.7rem;
+    bottom: 0.7rem;
+  }
+}
+
+
+@media (max-width: 767.98px) {
+  body,
+  body.dark-mode {
+    background: var(--bg) !important;
+  }
+
+  .page-wrap,
+  .content-viewport {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+  }
+
+  .summary-card::after,
+  .card-shell::after,
+  .card-dashboard::after,
+  .product-card::after,
+  .repair-card::after,
+  .invoice-card::after,
+  .expense-card::after,
+  .report-card::after,
+  .report-stat-card::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .summary-card,
+  .card-shell,
+  .card-dashboard,
+  .product-card,
+  .product-card-frame,
+  .repair-card,
+  .invoice-card,
+  .expense-card,
+  .expense-panel,
+  .report-card,
+  .report-stat-card,
+  .filter-card {
+    overflow: hidden;
+  }
+
+  .tracking-header-card,
+  .tracking-info-card,
+  .tracking-status-card,
+  .tracking-compact-card,
+  .tracking-premium-shell {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tracking-info-row,
+  .info-row,
+  .tracking-detail-item {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .page-wrap,
+  .content-viewport {
+    padding-left: 0.7rem !important;
+    padding-right: 0.7rem !important;
+  }
+
+  .summary-card,
+  .card-shell,
+  .card-dashboard,
+  .product-card,
+  .product-card-frame,
+  .repair-card,
+  .invoice-card,
+  .expense-card,
+  .expense-panel,
+  .report-card,
+  .report-stat-card,
+  .filter-card {
+    padding: 14px;
+  }
+
+  .tracking-info-row,
+  .info-row,
+  .tracking-detail-item {
+    padding: 0.82rem 0.72rem;
+  }
+}
