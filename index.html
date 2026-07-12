@@ -782,11 +782,105 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
       }
     }
 
+    /* Mobile header fix */
+.navbar-top{
+  overflow: visible;
+}
+
+@media (max-width: 991.98px){
+  .navbar-top .container{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:.5rem;
+    position:relative;
+    min-height:72px;
+  }
+
+  .navbar-top .navbar-brand{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .mobile-header-actions{
+    flex:0 0 auto;
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    position:relative;
+  }
+
+  .mobile-search-toggle{
+    margin-left:0 !important;
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+  }
+
+  .navbar-top .navbar-toggler{
+    flex:0 0 auto;
+  }
+
+  .mobile-search-panel{
+    display:none;
+    position:absolute;
+    top:50%;
+    right:66px;
+    left:auto;
+    transform:translateY(-50%);
+    z-index:1085;
+    padding:0;
+    min-width:0;
+  }
+
+  body.mobile-search-open .mobile-search-panel{
+    display:block;
+  }
+
+  body.mobile-search-open .navbar-brand .d-flex.flex-column{
+    display:none !important;
+  }
+
+  .mobile-search-panel .search-inline{
+    width:100%;
+    display:flex;
+    gap:.55rem;
+    align-items:center;
+    min-width:0;
+  }
+
+  .mobile-search-panel .search-inline .position-relative{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .mobile-search-panel .search-inline .form-control{
+    min-width:0;
+    width:100%;
+  }
+
+  .mobile-search-panel .search-inline .btn{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+}
+
+@media (max-width: 575.98px){
+  .mobile-search-panel{
+    left:74px;
+    right:62px;
+  }
+}
   </style>
 </head>
 <body class="dark-mode" data-page="home">
   <nav class="navbar navbar-expand-lg navbar-light navbar-top glass">
-    <div class="container py-2">
+    <div class="container py-2 position-relative d-flex align-items-center gap-2">
       <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#home">
         <span class="brand-box"><i class="bi bi-lightning-charge-fill"></i></span>
         <span class="d-flex flex-column lh-1">
@@ -794,47 +888,32 @@ body.dark-mode .navbar-top .navbar-toggler-icon{
           <small class="text-muted fw-semibold small" data-i18n="brand.sub">Shop & Mobile Repairing</small>
         </span>
       </a>
-
-      <button class="btn btn-outline-secondary mobile-search-toggle d-lg-none me-2" type="button" id="mobileSearchToggleBtn" aria-label="Open search">
-        <i class="bi bi-search" id="mobileSearchToggleIcon"></i>
-      </button>
-
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open menu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse d-none d-lg-flex align-items-center gap-3">
-        <ul class="navbar-nav mx-auto gap-lg-1 align-items-lg-center">
-          <li class="nav-item"><a class="nav-link custom-link active" href="#home" data-nav-link="home" data-i18n="nav.home">Home</a></li>
-          <li class="nav-item"><a class="nav-link custom-link" href="#about" data-nav-link="about" data-i18n="nav.about">About Us</a></li>
-          <li class="nav-item"><a class="nav-link custom-link" href="#services" data-nav-link="services" data-i18n="nav.services">Services</a></li>
-          <li class="nav-item"><a class="nav-link custom-link" href="#tracking" data-nav-link="tracking" data-i18n="nav.tracking">Tracking</a></li>
-        </ul>
-
-        <form class="search-inline d-flex gap-2 align-items-center" id="topTrackForm">
-          <div class="position-relative">
-            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-            <input class="form-control ps-5" id="topTrackInput" type="search" placeholder="Search repair ID..." data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
-          </div>
-          <button class="btn btn-primary px-3 fw-semibold d-inline-flex align-items-center gap-2" type="submit" id="topTrackBtn">
-            <i class="bi bi-arrow-right-circle"></i>
-            <span data-i18n="actions.track">Track</span>
-          </button>
-        </form>
-
-        <div class="d-flex align-items-center gap-2 ms-2">
-          <button class="btn btn-outline-secondary rounded-circle d-inline-flex align-items-center justify-content-center" type="button" id="themeToggleBtn" aria-label="Toggle dark mode" style="width:48px;height:48px">
-            <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
-          </button>
-          <button class="btn btn-outline-secondary rounded-pill fw-bold d-inline-flex align-items-center gap-2 px-3" type="button" id="langToggleBtn" aria-label="Language toggle">
-            <i class="bi bi-translate"></i>
-            <span id="langToggleLabel">SO</span>
-          </button>
-          <a class="btn btn-light rounded-pill fw-bold d-inline-flex align-items-center gap-2 px-3" id="accountBtnDesktop" href="login.html">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <span data-auth-label data-i18n="actions.login">Login</span>
-          </a>
+    
+      <div class="mobile-header-actions ms-auto d-flex align-items-center gap-2 position-relative">
+        <button class="btn btn-outline-secondary mobile-search-toggle d-lg-none" type="button" id="mobileSearchToggleBtn" aria-label="Open search">
+          <i class="bi bi-search" id="mobileSearchToggleIcon"></i>
+        </button>
+    
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="mobile-search-panel d-lg-none">
+          <form class="search-inline" id="mobileHeaderTrackForm">
+            <div class="position-relative">
+              <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+              <input class="form-control ps-5" id="mobileHeaderTrackInput" type="search" placeholder="R-123456789" data-i18n-placeholder="placeholders.track" aria-label="Search repair ID">
+            </div>
+            <button class="btn btn-primary fw-semibold d-inline-flex align-items-center justify-content-center gap-2" type="submit" id="mobileHeaderTrackBtn">
+              <i class="bi bi-arrow-right-circle"></i>
+              <span data-i18n="actions.track">Track</span>
+            </button>
+          </form>
         </div>
+      </div>
+    
+      <div class="collapse navbar-collapse d-none d-lg-flex align-items-center gap-3">
+        ...
       </div>
     </div>
     <div class="mobile-search-panel d-lg-none">
