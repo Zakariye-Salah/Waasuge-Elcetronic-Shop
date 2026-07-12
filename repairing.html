@@ -1089,12 +1089,16 @@
 <h5 class="fw-bold mb-1">Repair List</h5>
 <p class="text-muted mb-0">Search and manage all repair records. Showing <span id="visibleRepairCount">0</span> active repairs.</p>
 </div>
+
+
 <div class="d-flex flex-wrap gap-2">
 <span class="mini-pill bg-soft-warning text-warning-soft">Pending</span>
 <span class="mini-pill bg-soft-info text-info-soft">Processing</span>
 <span class="mini-pill bg-soft-success text-success-soft">Completed</span>
 </div>
 </div>
+
+
 <div class="section-body">
 <div class="row row-cols-1 row-cols-lg-2 g-3 repair-cards-shell" id="repairCards">
 <div class="col"><div class="repair-card card-shell h-100 p-3"><div class="skeleton-box mb-3" style="height: 140px;"></div><div class="skeleton-line mb-2" style="width: 60%;"></div><div class="skeleton-line mb-2" style="width: 45%;"></div><div class="skeleton-line" style="width: 35%;"></div></div></div>
@@ -1106,6 +1110,93 @@
 </div>
 </div>
 </div>
+
+<!-- Repair table --><!-- Repair table -->
+<div class="card-shell mb-4 repair-table-shell">
+  <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+  <h5 class="fw-bold mb-1">Repair Table</h5>
+  <p class="text-muted mb-0">A responsive table for detailed management.</p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+  <span class="mini-pill bg-soft-success text-success-soft">Editable</span>
+  <span class="mini-pill bg-soft-danger text-danger-soft">Deletable</span>
+  <span class="mini-pill bg-soft-primary text-primary-soft">Printable</span>
+  </div>
+  </div>
+  <div class="section-body">
+  <div class="table-responsive">
+  <table class="table align-middle">
+  <thead>
+  <tr>
+  <th>Customer</th>
+  <th>Device</th>
+  <th>Status</th>
+  <th>Price</th>
+  <th>Date</th>
+  <th class="text-end">Actions</th>
+  </tr>
+  </thead>
+  <tbody id="repairTableBody">
+  <tr class="repair-skeleton-row">
+    <td colspan="6">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 140px;"></div>
+          <div class="skeleton-line" style="width: 80px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 130px;"></div>
+          <div class="skeleton-line" style="width: 90px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 120px;"></div>
+          <div class="skeleton-line" style="width: 75px;"></div>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr class="repair-skeleton-row">
+    <td colspan="6">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 140px;"></div>
+          <div class="skeleton-line" style="width: 80px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 130px;"></div>
+          <div class="skeleton-line" style="width: 90px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 120px;"></div>
+          <div class="skeleton-line" style="width: 75px;"></div>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr class="repair-skeleton-row">
+    <td colspan="6">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 140px;"></div>
+          <div class="skeleton-line" style="width: 80px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 130px;"></div>
+          <div class="skeleton-line" style="width: 90px;"></div>
+        </div>
+        <div class="flex-grow-1">
+          <div class="skeleton-line mb-2" style="width: 120px;"></div>
+          <div class="skeleton-line" style="width: 75px;"></div>
+        </div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+  </table>
+  </div>
+  </div>
+  </div>
 <!-- Status board + timeline -->
 <div class="row g-4 mb-4">
   <div class="col-12 col-lg-6">
@@ -1237,92 +1328,7 @@
     </div>
   </div>
 </div>
-<!-- Repair table --><!-- Repair table -->
-<div class="card-shell mb-4 repair-table-shell">
-<div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-<div>
-<h5 class="fw-bold mb-1">Repair Table</h5>
-<p class="text-muted mb-0">A responsive table for detailed management.</p>
-</div>
-<div class="d-flex flex-wrap gap-2">
-<span class="mini-pill bg-soft-success text-success-soft">Editable</span>
-<span class="mini-pill bg-soft-danger text-danger-soft">Deletable</span>
-<span class="mini-pill bg-soft-primary text-primary-soft">Printable</span>
-</div>
-</div>
-<div class="section-body">
-<div class="table-responsive">
-<table class="table align-middle">
-<thead>
-<tr>
-<th>Customer</th>
-<th>Device</th>
-<th>Status</th>
-<th>Price</th>
-<th>Date</th>
-<th class="text-end">Actions</th>
-</tr>
-</thead>
-<tbody id="repairTableBody">
-<tr class="repair-skeleton-row">
-  <td colspan="6">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 140px;"></div>
-        <div class="skeleton-line" style="width: 80px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 130px;"></div>
-        <div class="skeleton-line" style="width: 90px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 120px;"></div>
-        <div class="skeleton-line" style="width: 75px;"></div>
-      </div>
-    </div>
-  </td>
-</tr>
-<tr class="repair-skeleton-row">
-  <td colspan="6">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 140px;"></div>
-        <div class="skeleton-line" style="width: 80px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 130px;"></div>
-        <div class="skeleton-line" style="width: 90px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 120px;"></div>
-        <div class="skeleton-line" style="width: 75px;"></div>
-      </div>
-    </div>
-  </td>
-</tr>
-<tr class="repair-skeleton-row">
-  <td colspan="6">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 p-2">
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 140px;"></div>
-        <div class="skeleton-line" style="width: 80px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 130px;"></div>
-        <div class="skeleton-line" style="width: 90px;"></div>
-      </div>
-      <div class="flex-grow-1">
-        <div class="skeleton-line mb-2" style="width: 120px;"></div>
-        <div class="skeleton-line" style="width: 75px;"></div>
-      </div>
-    </div>
-  </td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+
 <!-- Quick actions and notes -->
 <div class="row g-4">
 <div class="col-12 col-lg-8">
