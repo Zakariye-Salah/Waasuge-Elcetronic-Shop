@@ -33,6 +33,18 @@ const STATUS_ALIASES = {
   delivered: "delivered"
 };
 
+const STATUS_SOUND_MAP = {
+  "device received": "assets/sound/device-received.mp3",
+  "inspection started": "assets/sound/inspection-started.mp3",
+  "diagnosis completed": "assets/sound/diagnosis-completed.mp3",
+  "waiting for approval": "assets/sound/waiting-for-approval.mp3",
+  "waiting for parts": "assets/sound/waiting-for-parts.mp3",
+  "repair in progress": "assets/sound/repair-in-progress.mp3",
+  "quality testing": "assets/sound/quality-testing.mp3",
+  "ready for pickup": "assets/sound/ready-for-pickup.mp3",
+  "delivered": "assets/sound/delivered.mp3"
+};
+
 const I18N = {
   en: {
     "brand.main": "Waasuge Electronics",
@@ -389,7 +401,7 @@ function refreshTrackingView() {
   const repair = currentRepair || lastRenderedRepair;
   if (!repair) return false;
   try {
-    renderRepair(repair, lastRepairCollection);
+    renderRepair(repair, lastRepairCollection, { playStatusSound: false });
     window.requestAnimationFrame(() => observeRevealTargets(document));
     return true;
   } catch (error) {
@@ -605,6 +617,7 @@ function renderEmptyState() {
       <h3 class="h4 fw-bold mb-2">${escapeHtml(t("tracking.emptyTitle"))}</h3>
       <p class="text-muted mb-0">${escapeHtml(t("tracking.emptyText"))}</p>
     </div>`;
+
   const ratingCard = document.getElementById("ratingCard");
   if (ratingCard) ratingCard.classList.add("d-none");
 }
@@ -679,6 +692,44 @@ function stageList() {
 function normalizeTrackingStageKey(value) {
   const raw = normalizeText(value || "device received");
   return STATUS_META[raw] ? raw : (STATUS_META[STATUS_ALIASES[raw]] ? STATUS_ALIASES[raw] : "device received");
+}
+
+let lastStatusSoundToken = "";
+let lastStatusSoundTimer = null;
+
+function playStatusSound(statusValue, repairId, { force = false } = {}) {
+  const statusKey = normalizeTrackingStageKey(statusValue);
+  const soundFile = STATUS_SOUND_MAP[statusKey];
+  if (!soundFile) return false;
+
+  const token = `${normalizeText(repairId || "repair")}:${statusKey}`;
+  if (!force && token === lastStatusSoundToken) return false;
+  lastStatusSoundToken = token;
+
+  try {
+    const audio = new Audio(soundFile);
+    audio.preload = "auto";
+    audio.volume = 0.85;
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+    return true;
+  } catch (error) {
+    console.warn("Could not play status sound:", error);
+    return false;
+  }
+}
+
+function scheduleStatusSound(statusValue, repairId, delayMs = 5000) {
+  if (lastStatusSoundTimer) {
+    clearTimeout(lastStatusSoundTimer);
+    lastStatusSoundTimer = null;
+  }
+  lastStatusSoundTimer = window.setTimeout(() => {
+    lastStatusSoundTimer = null;
+    playStatusSound(statusValue, repairId, { force: true });
+  }, Math.max(0, Number(delayMs) || 0));
 }
 
 function extractStatusHistory(repair) {
@@ -847,7 +898,7 @@ function scrollToTrackingResult() {
   window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
 }
 
-function renderRepair(repair, repairs = lastRepairCollection) {
+function renderRepair(repair, repairs = lastRepairCollection, options = {}) {
   const host = document.getElementById("trackResult");
   lastRenderedRepair = repair || lastRenderedRepair;
   if (!host) return;
@@ -908,8 +959,12 @@ function renderRepair(repair, repairs = lastRepairCollection) {
     ["Repair ID", repairId || "—", "bi-upc-scan"],
     ["Brand", brand, "bi-tags"],
     ["Model", model, "bi-phone-vibrate"],
+    ["Serial / IMEI", serial, "bi-fingerprint"],
+    ["Shop Name", shopName, "bi-shop"],
+    ["Shop Phone", shopPhone, "bi-telephone-fill"],
     ["Received Date", receivedDate, "bi-calendar2-event"],
     ["Estimated Completion", estimatedDate, "bi-calendar2-check"],
+    ["Email", email, "bi-envelope"],
     ["Working Hours", hours, "bi-clock-history"]
   ].map(([label, value, icon]) => `
       <div class="tracking-info-row">
@@ -1030,6 +1085,8 @@ async function handleTrack(inputEl) {
     ratingStats = await loadVisitorRatings(currentRepairId);
     setMessage("success", `${t("record.found")} “${escapeHtml(currentRepairId)}”.`);
     renderRepair(result, lastRepairCollection);
+    lastStatusSoundToken = "";
+    scheduleStatusSound(result?.status, currentRepairId, 5000);
     observeRevealTargets(document);
     setTimeout(scrollToTrackingResult, 80);
   } catch (error) {
@@ -1223,7 +1280,7 @@ function bindRatingForm() {
       setMessage("success", t("rating.saved"));
       if (document.getElementById("ratingHelper")) document.getElementById("ratingHelper").textContent = comment ? t("rating.comment") : t("rating.saved");
       renderRatingStars(currentRating);
-      if (currentRepair) renderRepair(currentRepair, lastRepairCollection);
+      if (currentRepair) renderRepair(currentRepair, lastRepairCollection, { playStatusSound: false });
     } catch (error) {
       console.error("Rating save failed:", error);
       setMessage("danger", error?.message || "Rating could not be saved.");
