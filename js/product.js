@@ -2,10 +2,12 @@ import {
   addProduct,
   addInvoice,
   updateInvoice,
+  deleteInvoice,
   updateProduct,
   deleteProduct,
   restoreProduct,
   getProducts,
+  getInvoices,
   getSettingValue,
   setSettingValue,
   safeNumber,
@@ -43,7 +45,8 @@ const state = {
   saleHistoryRows: "5",
   productRows: "5",
   categoriesReady: false,
-  restockCollapsed: false
+  restockCollapsed: false,
+  saleHistoryRecords: []
 };
 
 const nodes = {
@@ -231,6 +234,27 @@ function safeJsonParse(value, fallback) {
   }
 }
 
+function normalizeSaleHistoryRecords(raw) {
+  const records = Array.isArray(raw)
+    ? raw
+    : raw && typeof raw === "object"
+      ? Object.entries(raw).map(([key, value]) => ({
+          ...(value && typeof value === "object" ? value : {}),
+          id: value?.id || key,
+          invoiceId: value?.invoiceId || key,
+          firebaseKey: value?.firebaseKey || key
+        }))
+      : [];
+
+  return records
+    .filter(Boolean)
+    .map((item) => ({
+      ...item,
+      id: item?.id || item?.invoiceId || item?.invoiceNumber || item?.firebaseKey || String(Date.now()),
+      invoiceId: item?.invoiceId || item?.id || item?.firebaseKey || item?.invoiceNumber || null
+    }));
+}
+
 function getCart() {
   const cart = safeJsonParse(localStorage.getItem(CART_KEY), []);
   return Array.isArray(cart) ? cart : [];
@@ -271,12 +295,15 @@ function clearStoredCartDiscount() {
 }
 
 function getSaleHistory() {
-  const history = safeArray(safeJsonParse(localStorage.getItem(SALE_HISTORY_KEY) || "[]", []));
-  return history.slice().sort((a, b) => safeNumber(b?.createdAt) - safeNumber(a?.createdAt));
+  const source = state.saleHistoryRecords.length
+    ? state.saleHistoryRecords
+    : safeArray(safeJsonParse(localStorage.getItem(SALE_HISTORY_KEY) || "[]", []));
+  return source.slice().sort((a, b) => safeNumber(b?.createdAt) - safeNumber(a?.createdAt));
 }
 
 function saveSaleHistory(history) {
   const list = safeArray(history).slice(0, 300);
+  state.saleHistoryRecords = list.slice();
   localStorage.setItem(SALE_HISTORY_KEY, JSON.stringify(list));
 }
 
@@ -352,9 +379,39 @@ function getSaleHistoryRowLimit() {
   return Math.max(1, safeNumber(value, 5));
 }
 
-function deleteSaleHistoryItem(id) {
-  saveSaleHistory(getSaleHistory().filter((item) => saleHistoryRecordId(item) !== String(id)));
-  renderSaleHistory();
+async function deleteSaleHistoryItem(id) {
+  const key = String(id || "").trim();
+  if (!key) return;
+  try {
+    await deleteInvoice(key);
+    const remaining = getSaleHistory().filter((item) => saleHistoryRecordId(item) !== key);
+    saveSaleHistory(remaining);
+    renderSaleHistory();
+    renderSummaryCards();
+  } catch (error) {
+    console.error("Failed to delete sale history item:", error);
+    throw error;
+  }
+}
+
+async function loadSaleHistoryFromFirebase(skipRender = false) {
+  if (!skipRender) {
+    const body = document.getElementById("saleHistoryBody");
+    if (body) body.innerHTML = renderSaleHistorySkeleton(4);
+  }
+  try {
+    const raw = await getInvoices();
+    const records = normalizeSaleHistoryRecords(raw);
+    state.saleHistoryRecords = records.filter(Boolean).slice(0, 300);
+    localStorage.setItem(SALE_HISTORY_KEY, JSON.stringify(state.saleHistoryRecords));
+    if (!skipRender) renderSaleHistory();
+    return state.saleHistoryRecords;
+  } catch (error) {
+    console.error("Failed to load sale history:", error);
+    state.saleHistoryRecords = safeArray(safeJsonParse(localStorage.getItem(SALE_HISTORY_KEY) || "[]", []));
+    if (!skipRender) renderSaleHistory();
+    return state.saleHistoryRecords;
+  }
 }
 
 function renderSaleHistory() {
@@ -1257,8 +1314,8 @@ function getTodaySalesSummary() {
     const items = safeArray(item?.items);
     return sum + items.reduce((inner, row) => inner + safeNumber(row?.qty, 0), 0);
   }, 0);
-  const paidMoney = history.reduce((sum, item) => sum + safeNumber(item?.paidAmount ?? item?.total ?? item?.finalTotal ?? 0), 0);
-  const remainingMoney = history.reduce((sum, item) => sum + safeNumber(item?.remaining ?? item?.balance ?? 0), 0);
+  const paidMoney = history.reduce((sum, item) => sum + safeNumber(item?.paidAmount ?? item?.paid ?? item?.total ?? item?.finalTotal ?? 0), 0);
+  const remainingMoney = history.reduce((sum, item) => sum + safeNumber(item?.remaining ?? item?.balance ?? item?.dueAmount ?? item?.due ?? 0), 0);
   return { soldQty, paidMoney, remainingMoney };
 }
 
@@ -1777,7 +1834,7 @@ async function handleCardAction(action, key, button = null) {
         await completeCartTransaction("sell", button);
         break;
       case "sale-delete":
-        deleteSaleHistoryItem(key);
+        await deleteSaleHistoryItem(key);
         showToast("Sale history deleted", "delete", "Sales");
         break;
       case "sale-edit":
@@ -1956,7 +2013,10 @@ function initProductPage() {
     setupCategorySelector(nodes.filterCategorySelector, { allowAll: true, placeholder: "All Categories", onChange: () => renderAll() });
   }
 
-  loadProducts(false).finally(() => {
+  Promise.all([
+    loadProducts(false),
+    loadSaleHistoryFromFirebase(false)
+  ]).finally(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("openCart") === "1" || params.get("cart") === "1") openCartModal();
   });
