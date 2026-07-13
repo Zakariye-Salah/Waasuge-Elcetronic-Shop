@@ -957,14 +957,8 @@ function renderRepair(repair, repairs = lastRepairCollection, options = {}) {
     [t("record.problem"), notes, "bi-clipboard2-pulse"],
     [t("record.parts"), services.length ? services.join(" • ") : "—", "bi-puzzle"],
     ["Repair ID", repairId || "—", "bi-upc-scan"],
-    ["Brand", brand, "bi-tags"],
     ["Model", model, "bi-phone-vibrate"],
-    ["Serial / IMEI", serial, "bi-fingerprint"],
-    ["Shop Name", shopName, "bi-shop"],
-    ["Shop Phone", shopPhone, "bi-telephone-fill"],
     ["Received Date", receivedDate, "bi-calendar2-event"],
-    ["Estimated Completion", estimatedDate, "bi-calendar2-check"],
-    ["Email", email, "bi-envelope"],
     ["Working Hours", hours, "bi-clock-history"]
   ].map(([label, value, icon]) => `
       <div class="tracking-info-row">
