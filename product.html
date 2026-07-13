@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>🏪 Products | Electronic Shop</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%25%22 stop-color=%22%232563eb%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%237c3aed%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22url(%23g)%22/%3E%3Cpath d=%22M14 26h36v24H14z%22 fill=%22%23fff%22 opacity=%22.96%22/%3E%3Cpath d=%22M18 22h28l4 4H14z%22 fill=%22%23fff%22 opacity=%22.92%22/%3E%3Cpath d=%22M22 31h8v10h-8zm12 0h10v10H34z%22 fill=%22%232563eb%22/%3E%3Cpath d=%22M27 13h10v11H27z%22 fill=%22%23fff%22 opacity=%22.95%22/%3E%3C/svg%3E"/>
+<title>Electronic Shop | Products</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
 <style>
@@ -588,6 +587,164 @@ body.dark-mode .category-option.active {
 
   
 
+
+    .filter-shell {
+      position: relative;
+      z-index: 40;
+      overflow: visible;
+      isolation: isolate;
+    }
+
+    .filter-shell .category-panel {
+      z-index: 3000;
+    }
+
+    .restock-shell {
+      position: relative;
+      z-index: 35;
+    }
+
+    .restock-shell .section-header {
+      align-items: flex-start;
+    }
+
+    .restock-shell.is-collapsed .section-body {
+      display: none;
+    }
+
+    .restock-queue-list {
+      display: grid;
+      gap: 0.75rem;
+      max-height: 200px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 2px;
+      scrollbar-width: thin;
+    }
+
+    .restock-queue-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .restock-queue-list::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.45);
+      border-radius: 999px;
+    }
+
+    .restock-empty {
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      padding: 1rem;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    body.dark-mode .restock-empty {
+      border-color: var(--dark-border);
+      background: rgba(17, 24, 39, 0.35);
+    }
+
+    .restock-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.72);
+      padding: 0.9rem 1rem;
+    }
+
+    body.dark-mode .restock-item {
+      background: rgba(17,24,39,0.72);
+      border-color: var(--dark-border);
+    }
+
+    .restock-item-main {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .restock-item-title {
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.2rem;
+    }
+
+    .restock-item-meta {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.25;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .restock-item-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .restock-item-side {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 0 0 auto;
+    }
+
+    .restock-qty-pill {
+      padding: 0.4rem 0.65rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .restock-eye-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.55);
+    }
+
+    body.dark-mode .detail-row {
+      background: rgba(17,24,39,0.55);
+      border-color: var(--dark-border);
+    }
+
+    .detail-label {
+      color: var(--muted);
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .detail-value {
+      font-weight: 800;
+      text-align: right;
+      min-width: 0;
+      word-break: break-word;
+    }
+
     :root {
       --sidebar-collapsed-width: 84px;
     }
@@ -904,8 +1061,27 @@ body.dark-mode .category-option.active {
 </div>
 </div>
 </div>
+<!-- Low stock restock queue -->
+<div class="card-shell mb-4 restock-shell" id="restockQueueShell">
+<div class="section-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+<div>
+<h5 class="fw-bold mb-1">Need to restock</h5>
+<p class="text-muted mb-0">The first low-stock products appear here. The list scrolls when more items are waiting.</p>
+</div>
+<div class="d-flex align-items-center gap-2">
+<span class="mini-pill bg-soft-danger text-danger-soft" id="restockQueueCount">0 items</span>
+<button class="btn btn-outline-secondary rounded-4" id="toggleRestockQueueBtn" type="button" aria-expanded="true" title="Hide restock list">
+<i class="bi bi-chevron-up"></i>
+</button>
+</div>
+</div>
+<div class="section-body pt-0">
+<div class="restock-queue-list" id="restockQueueBody"></div>
+</div>
+</div>
+
 <!-- Search / filters -->
-<div class="card-shell mb-4">
+<div class="card-shell mb-4 filter-shell">
 <div class="section-body">
 <div class="row g-3 align-items-center">
 <div class="col-12 col-lg-5">
@@ -952,7 +1128,7 @@ body.dark-mode .category-option.active {
 </div>
 </div>
 <!-- Category tags -->
-<!-- <div class="card-shell mb-4">
+<div class="card-shell mb-4">
 <div class="section-body">
 <div class="d-flex flex-wrap gap-2">
 <span class="tag-pill"><i class="bi bi-phone"></i> Teleefannada yaryar</span>
@@ -964,7 +1140,7 @@ body.dark-mode .category-option.active {
 <span class="tag-pill"><i class="bi bi-tools"></i> Repair tools</span>
 </div>
 </div>
-</div> -->
+</div>
 <!-- Product cards -->
 <div class="row g-3 g-xl-4 mb-4 product-cards-grid" id="productCardsGrid"></div>
 <!-- Table view -->
@@ -1246,6 +1422,22 @@ body.dark-mode .category-option.active {
 </div>
 </div>
 </div>
+<!-- Restock product details modal -->
+<div aria-hidden="true" class="modal fade" id="restockDetailModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+<div class="modal-content">
+<div class="modal-header border-bottom">
+<div>
+<h5 class="modal-title fw-bold mb-0" id="restockDetailTitle">Product details</h5>
+<small class="text-muted">Full information for the selected low-stock item.</small>
+</div>
+<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+</div>
+<div class="modal-body p-4" id="restockDetailBody"></div>
+</div>
+</div>
+</div>
+
 <!-- Mobile bottom navigation -->
 <nav class="mobile-bottom-nav d-lg-none position-fixed bottom-0 start-0 w-100 bg-white border-top shadow-sm">
 <div class="d-flex justify-content-around py-2">
