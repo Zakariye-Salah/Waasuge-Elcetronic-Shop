@@ -42,7 +42,8 @@ const state = {
   saleHistoryDateFilter: "today",
   saleHistoryRows: "5",
   productRows: "5",
-  categoriesReady: false
+  categoriesReady: false,
+  restockCollapsed: false
 };
 
 const nodes = {
@@ -84,6 +85,13 @@ const nodes = {
   cartFinalTotal: null,
   cartDiscountInput: null,
   cartModalTitle: null,
+  restockQueueShell: null,
+  restockQueueBody: null,
+  restockQueueCount: null,
+  toggleRestockQueueBtn: null,
+  restockDetailModal: null,
+  restockDetailTitle: null,
+  restockDetailBody: null,
 };
 
 const productCategories = [
@@ -1140,6 +1148,13 @@ function collectNodes() {
   nodes.cartFinalTotal = document.getElementById("cartFinalTotal");
   nodes.cartDiscountInput = document.getElementById("cartDiscountInput");
   nodes.cartModalTitle = document.getElementById("cartModalTitle");
+  nodes.restockQueueShell = document.getElementById("restockQueueShell");
+  nodes.restockQueueBody = document.getElementById("restockQueueBody");
+  nodes.restockQueueCount = document.getElementById("restockQueueCount");
+  nodes.toggleRestockQueueBtn = document.getElementById("toggleRestockQueueBtn");
+  nodes.restockDetailModal = document.getElementById("restockDetailModal");
+  nodes.restockDetailTitle = document.getElementById("restockDetailTitle");
+  nodes.restockDetailBody = document.getElementById("restockDetailBody");
   nodes.filterCategorySelector = document.querySelector('[data-category-selector="filter"]');
   nodes.productCategorySelector = document.querySelector('[data-category-selector="product"]');
   nodes.productStockFilter = document.getElementById("productStockFilter");
@@ -1198,6 +1213,108 @@ function renderSummaryCards() {
   if (nodes.summaryLowStockProducts) nodes.summaryLowStockProducts.textContent = String(lowStockProducts);
   if (nodes.summaryImportantProducts) nodes.summaryImportantProducts.textContent = String(importantProducts);
   if (nodes.summaryRecycleBinCount) nodes.summaryRecycleBinCount.textContent = String(deleted.length);
+}
+
+function getRestockProducts() {
+  return filterActive(state.products)
+    .filter((item) => safeNumber(item?.quantity) <= safeNumber(item?.lowStockThreshold, PRODUCT_LOW_STOCK))
+    .sort((a, b) => {
+      const byQty = safeNumber(a?.quantity) - safeNumber(b?.quantity);
+      if (byQty !== 0) return byQty;
+      return safeNumber(b?.createdAt) - safeNumber(a?.createdAt);
+    });
+}
+
+function openRestockDetailModal(product) {
+  if (!product || !nodes.restockDetailModal) return;
+
+  const name = normalizeName(product) || "Untitled Product";
+  const category = normalizeCategory(product) || "Uncategorized";
+  const price = formatCurrency(safeNumber(product?.price));
+  const originalPrice = formatCurrency(safeNumber(product?.originalPrice ?? product?.buyingPrice ?? product?.costPrice));
+  const quantity = safeNumber(product?.quantity);
+  const threshold = safeNumber(product?.lowStockThreshold, PRODUCT_LOW_STOCK);
+  const stock = stockLabel(product);
+  const productId = getDisplayProductId(product) || "-";
+  const notes = String(product?.notes || "").trim() || "No notes added.";
+  const updatedAt = formatDateTime(product?.updatedAt || product?.createdAt || Date.now());
+
+  if (nodes.restockDetailTitle) nodes.restockDetailTitle.textContent = name;
+  if (nodes.restockDetailBody) {
+    nodes.restockDetailBody.innerHTML = `
+      <div class="detail-grid">
+        <div class="detail-row"><div class="detail-label">Product</div><div class="detail-value">${name}</div></div>
+        <div class="detail-row"><div class="detail-label">Category</div><div class="detail-value">${category}</div></div>
+        <div class="detail-row"><div class="detail-label">Product ID</div><div class="detail-value">${productId}</div></div>
+        <div class="detail-row"><div class="detail-label">Price</div><div class="detail-value">${price}</div></div>
+        <div class="detail-row"><div class="detail-label">Original Price</div><div class="detail-value">${originalPrice}</div></div>
+        <div class="detail-row"><div class="detail-label">Quantity</div><div class="detail-value">${quantity}</div></div>
+        <div class="detail-row"><div class="detail-label">Threshold</div><div class="detail-value">${threshold}</div></div>
+        <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="badge ${stock.className}">${stock.label}</span></div></div>
+        <div class="detail-row"><div class="detail-label">Updated</div><div class="detail-value">${updatedAt}</div></div>
+        <div class="detail-row"><div class="detail-label">Notes</div><div class="detail-value">${notes}</div></div>
+      </div>
+    `;
+  }
+  openBootstrapModal(nodes.restockDetailModal)?.show();
+}
+
+function renderRestockQueue() {
+  if (!nodes.restockQueueBody) return;
+  const list = getRestockProducts();
+  const count = list.length;
+
+  if (nodes.restockQueueCount) {
+    nodes.restockQueueCount.textContent = `${count} item${count === 1 ? "" : "s"}`;
+  }
+
+  if (nodes.toggleRestockQueueBtn) {
+    nodes.toggleRestockQueueBtn.setAttribute("aria-expanded", state.restockCollapsed ? "false" : "true");
+    nodes.toggleRestockQueueBtn.title = state.restockCollapsed ? "Show restock list" : "Hide restock list";
+    nodes.toggleRestockQueueBtn.innerHTML = state.restockCollapsed
+      ? '<i class="bi bi-chevron-down"></i>'
+      : '<i class="bi bi-chevron-up"></i>';
+  }
+
+  if (!count) {
+    nodes.restockQueueBody.innerHTML = `
+      <div class="restock-empty">
+        <i class="bi bi-check2-circle fs-3 d-block mb-1"></i>
+        <div class="fw-bold">No products need restocking right now</div>
+        <div class="small">Everything looks fine for the moment.</div>
+      </div>`;
+    nodes.restockQueueShell?.classList.toggle("is-collapsed", Boolean(state.restockCollapsed));
+    return;
+  }
+
+  nodes.restockQueueBody.innerHTML = list.map((product) => {
+    const name = normalizeName(product) || "Untitled Product";
+    const category = normalizeCategory(product) || "Uncategorized";
+    const key = getProductKey(product);
+    const qty = safeNumber(product?.quantity);
+    const threshold = safeNumber(product?.lowStockThreshold, PRODUCT_LOW_STOCK);
+    const stock = stockLabel(product);
+    const idLabel = getDisplayProductId(product) || "-";
+    return `
+      <div class="restock-item">
+        <div class="restock-item-main">
+          <div class="restock-item-title">${name}</div>
+          <div class="restock-item-meta">
+            <span><i class="bi bi-tags"></i>${category}</span>
+            <span><i class="bi bi-upc-scan"></i>${idLabel}</span>
+            <span><i class="bi bi-bag-check"></i>Need refill soon</span>
+          </div>
+        </div>
+        <div class="restock-item-side">
+          <span class="restock-qty-pill ${qty <= 0 ? "bg-soft-danger text-danger-soft" : "bg-soft-warning text-warning-soft"}">Qty ${qty} / ${threshold}</span>
+          <button class="btn btn-outline-primary restock-eye-btn" data-action="restock-view" data-id="${key}" type="button" title="View full details">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>`;
+  }).join("");
+
+  nodes.restockQueueShell?.classList.toggle("is-collapsed", Boolean(state.restockCollapsed));
 }
 
 function updateCartTotals(subtotal, discount, finalTotal) {
@@ -1289,6 +1406,7 @@ function renderAll() {
   renderTrash();
   renderSaleHistory();
   renderSummaryCards();
+  renderRestockQueue();
   syncHeaderCartCount();
   if (typeof updateProductNotificationBadge === "function") updateProductNotificationBadge();
 }
@@ -1515,6 +1633,10 @@ async function handleCardAction(action, key, button = null) {
         if (!product) return;
         showToast(`${normalizeName(product)} • ${normalizeCategory(product)} • ${formatCurrency(safeNumber(product?.price))}`, "info", "Product");
         break;
+      case "restock-view":
+        if (!product) return;
+        openRestockDetailModal(product);
+        break;
       case "edit":
         if (!product) return;
         openAddModal(product);
@@ -1640,6 +1762,13 @@ function bindPageActions() {
     if (button.id === "openCategoryManagerBtn") {
       event.preventDefault();
       openCategoryManager();
+      return;
+    }
+
+    if (button.id === "toggleRestockQueueBtn") {
+      event.preventDefault();
+      state.restockCollapsed = !state.restockCollapsed;
+      renderRestockQueue();
       return;
     }
 
