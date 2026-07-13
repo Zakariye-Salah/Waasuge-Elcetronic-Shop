@@ -455,7 +455,7 @@ body.dark-mode .category-selector .category-trigger[readonly] {
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  z-index: 1080;
+  z-index: 1040;
   border: 1px solid var(--border);
   border-radius: 18px;
   overflow: hidden;
@@ -596,7 +596,7 @@ body.dark-mode .category-option.active {
     }
 
     .filter-shell .category-panel {
-      z-index: 3000;
+      z-index: 1040;
     }
 
     .restock-shell {
@@ -606,6 +606,15 @@ body.dark-mode .category-option.active {
 
     .restock-shell .section-header {
       align-items: flex-start;
+    }
+
+    .restock-shell #restockQueueCount {
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--primary);
+    }
+
+    .restock-shell h5 {
+      color: var(--primary);
     }
 
     .restock-shell.is-collapsed .section-body {
@@ -859,6 +868,72 @@ body.dark-mode .category-option.active {
       font-size: 1.05rem;
     }
 
+  
+    .sales-summary-grid .summary-value {
+      font-size: 1.35rem;
+    }
+
+    .sales-summary-grid .summary-trend {
+      opacity: 0.92;
+    }
+
+    .restock-item-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .restock-category-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 700;
+    }
+
+    .restock-item-price,
+    .restock-item-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .restock-item-subline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.8rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.3;
+    }
+
+    .filter-shell {
+      z-index: 20;
+      position: relative;
+    }
+
+    .filter-shell .category-panel {
+      z-index: 1040;
+    }
+
+    .modal-content {
+      max-height: calc(100vh - 1.5rem);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-body {
+      overflow: auto;
+    }
+
+    .modal-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+      background: inherit;
+    }
+
   </style>
 <link href="./css/style.css" rel="stylesheet"/>
 <link href="./css/product.css" rel="stylesheet"/>
@@ -1061,12 +1136,53 @@ body.dark-mode .category-option.active {
 </div>
 </div>
 </div>
+
+<!-- Sales summary cards -->
+<div class="row g-3 g-xl-4 mb-4 sales-summary-grid">
+<div class="col-12 col-md-4">
+<div class="card-shell summary-card">
+<div class="d-flex align-items-center justify-content-between gap-3">
+<div>
+<p class="summary-label">Sold Today</p>
+<div class="summary-value" id="summarySoldTodayProducts">0</div>
+<div class="summary-trend text-primary-soft"><i class="bi bi-bag-check me-1"></i> Product qty sold</div>
+</div>
+<div class="summary-icon bg-soft-primary"><i class="bi bi-bag-check"></i></div>
+</div>
+</div>
+</div>
+<div class="col-12 col-md-4">
+<div class="card-shell summary-card">
+<div class="d-flex align-items-center justify-content-between gap-3">
+<div>
+<p class="summary-label">Paid Today</p>
+<div class="summary-value" id="summaryPaidTodayAmount">$0.00</div>
+<div class="summary-trend text-success-soft"><i class="bi bi-cash-coin me-1"></i> Cash collected</div>
+</div>
+<div class="summary-icon bg-soft-success"><i class="bi bi-cash-coin"></i></div>
+</div>
+</div>
+</div>
+<div class="col-12 col-md-4">
+<div class="card-shell summary-card">
+<div class="d-flex align-items-center justify-content-between gap-3">
+<div>
+<p class="summary-label">Remaining Today</p>
+<div class="summary-value" id="summaryRemainingTodayAmount">$0.00</div>
+<div class="summary-trend text-warning-soft"><i class="bi bi-hourglass-split me-1"></i> Still pending</div>
+</div>
+<div class="summary-icon bg-soft-warning"><i class="bi bi-hourglass-split"></i></div>
+</div>
+</div>
+</div>
+</div>
+
 <!-- Low stock restock queue -->
 <div class="card-shell mb-4 restock-shell" id="restockQueueShell">
 <div class="section-header d-flex flex-wrap justify-content-between align-items-center gap-2">
 <div>
 <h5 class="fw-bold mb-1">Need to restock</h5>
-<p class="text-muted mb-0">The first low-stock products appear here. The list scrolls when more items are waiting.</p>
+<p class="text-muted mb-0">The first low-stock and near-low products appear here. The list scrolls when more items are waiting.</p>
 </div>
 <div class="d-flex align-items-center gap-2">
 <span class="mini-pill bg-soft-danger text-danger-soft" id="restockQueueCount">0 items</span>
@@ -1272,7 +1388,7 @@ body.dark-mode .category-option.active {
 <input class="form-control" id="categoryManagerInput" placeholder="New category name" type="text"/>
 </div>
 <div class="col-12 col-md-4 d-grid">
-<button class="btn btn-primary" id="categoryManagerAddBtn" type="button"><i class="bi bi-plus-lg me-1"></i>Add Category</button>
+<button class="btn btn-primary" id="categoryManagerAddBtn" type="button" data-default-submit="true"><i class="bi bi-plus-lg me-1"></i>Add Category</button>
 </div>
 </div>
 <div id="categoryManagerBody"></div>
@@ -1527,7 +1643,7 @@ body.dark-mode .category-option.active {
 </div>
 <div class="modal-footer border-top">
 <button class="btn btn-light border rounded-4" data-bs-dismiss="modal" type="button">Cancel</button>
-<button class="btn btn-primary rounded-4" id="saveProductBtn" type="button"><i class="bi bi-save me-1"></i> Save Product</button>
+<button class="btn btn-primary rounded-4" id="saveProductBtn" type="button" data-default-submit="true"><i class="bi bi-save me-1"></i> Save Product</button>
 </div>
 </div>
 </div>
