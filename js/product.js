@@ -76,6 +76,9 @@ const nodes = {
   summaryLowStockProducts: null,
   summaryImportantProducts: null,
   summaryRecycleBinCount: null,
+  summarySoldTodayProducts: null,
+  summaryPaidTodayAmount: null,
+  summaryRemainingTodayAmount: null,
   saleHistoryDateFilter: null,
   saleHistoryRowsFilter: null,
   cartBadge: null,
@@ -999,8 +1002,18 @@ function openBootstrapModal(node) {
   return node ? window.bootstrap?.Modal.getOrCreateInstance(node) || null : null;
 }
 
+function closeCategoryPanels() {
+  document.querySelectorAll("[data-category-selector]").forEach((root) => {
+    const panel = root.querySelector("[data-category-panel]");
+    const trigger = root.querySelector(".category-trigger");
+    panel?.classList.add("d-none");
+    trigger?.setAttribute("aria-expanded", "false");
+  });
+}
+
 function openCartModal() {
   if (!nodes.cartModal) return;
+  closeCategoryPanels();
   if (nodes.cartModalTitle) {
     nodes.cartModalTitle.textContent = state.editSaleId ? "Update Sell" : "Cart Preview";
   }
@@ -1139,6 +1152,9 @@ function collectNodes() {
   nodes.summaryLowStockProducts = document.getElementById("summaryLowStockProducts");
   nodes.summaryImportantProducts = document.getElementById("summaryImportantProducts");
   nodes.summaryRecycleBinCount = document.getElementById("summaryRecycleBinCount");
+  nodes.summarySoldTodayProducts = document.getElementById("summarySoldTodayProducts");
+  nodes.summaryPaidTodayAmount = document.getElementById("summaryPaidTodayAmount");
+  nodes.summaryRemainingTodayAmount = document.getElementById("summaryRemainingTodayAmount");
   nodes.saleHistoryDateFilter = document.getElementById("saleHistoryDateFilter");
   nodes.saleHistoryRowsFilter = document.getElementById("saleHistoryRowsFilter");
   nodes.cartBadge = document.getElementById("cartBadge");
@@ -1202,6 +1218,50 @@ function renderTable() {
   }).join("");
 }
 
+function getTodayRangeStart() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now.getTime();
+}
+
+function formatRestockDateTime(value) {
+  const ts = safeNumber(value);
+  if (!Number.isFinite(ts) || ts <= 0) return "-";
+  const date = new Date(ts);
+  if (Number.isNaN(date.getTime())) return "-";
+  const weekday = date.toLocaleDateString(undefined, { weekday: "short" });
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleDateString(undefined, { month: "short" });
+  const year = date.getFullYear();
+  const time = date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: true });
+  return `${weekday}/${day}/${month}/${year} ${time}`;
+}
+
+function getRestockStatus(product = {}) {
+  const qty = safeNumber(product?.quantity);
+  const threshold = safeNumber(product?.lowStockThreshold, PRODUCT_LOW_STOCK);
+  if (qty <= 0) return { key: "out", label: "Out of stock", className: "bg-soft-danger text-danger-soft" };
+  if (qty <= threshold) return { key: "low", label: "Low stock", className: "bg-soft-warning text-warning-soft" };
+  if (qty <= threshold + 2) return { key: "near", label: "Near low", className: "bg-soft-info text-info-soft" };
+  return { key: "ok", label: "In stock", className: "bg-soft-success text-success-soft" };
+}
+
+function getRestockHitTimestamp(product = {}) {
+  return safeNumber(product?.lowStockHitAt || product?.stockAlertAt || product?.updatedAt || product?.createdAt || Date.now());
+}
+
+function getTodaySalesSummary() {
+  const since = getTodayRangeStart();
+  const history = getSaleHistory().filter((item) => safeNumber(item?.createdAt) >= since);
+  const soldQty = history.reduce((sum, item) => {
+    const items = safeArray(item?.items);
+    return sum + items.reduce((inner, row) => inner + safeNumber(row?.qty, 0), 0);
+  }, 0);
+  const paidMoney = history.reduce((sum, item) => sum + safeNumber(item?.paidAmount ?? item?.total ?? item?.finalTotal ?? 0), 0);
+  const remainingMoney = history.reduce((sum, item) => sum + safeNumber(item?.remaining ?? item?.balance ?? 0), 0);
+  return { soldQty, paidMoney, remainingMoney };
+}
+
 function renderSummaryCards() {
 
   const active = filterActive(state.products);
@@ -1209,16 +1269,23 @@ function renderSummaryCards() {
   const totalProducts = active.length;
   const lowStockProducts = active.filter((item) => safeNumber(item?.quantity) <= safeNumber(item?.lowStockThreshold, PRODUCT_LOW_STOCK)).length;
   const importantProducts = active.filter((item) => Boolean(item?.important || item?.isImportant)).length;
+  const salesSummary = getTodaySalesSummary();
   if (nodes.summaryTotalProducts) nodes.summaryTotalProducts.textContent = String(totalProducts);
   if (nodes.summaryLowStockProducts) nodes.summaryLowStockProducts.textContent = String(lowStockProducts);
   if (nodes.summaryImportantProducts) nodes.summaryImportantProducts.textContent = String(importantProducts);
   if (nodes.summaryRecycleBinCount) nodes.summaryRecycleBinCount.textContent = String(deleted.length);
+  if (nodes.summarySoldTodayProducts) nodes.summarySoldTodayProducts.textContent = String(salesSummary.soldQty);
+  if (nodes.summaryPaidTodayAmount) nodes.summaryPaidTodayAmount.textContent = formatCurrency(salesSummary.paidMoney);
+  if (nodes.summaryRemainingTodayAmount) nodes.summaryRemainingTodayAmount.textContent = formatCurrency(salesSummary.remainingMoney);
 }
 
 function getRestockProducts() {
   return filterActive(state.products)
-    .filter((item) => safeNumber(item?.quantity) <= safeNumber(item?.lowStockThreshold, PRODUCT_LOW_STOCK))
+    .filter((item) => getRestockStatus(item).key !== "ok")
     .sort((a, b) => {
+      const order = { out: 0, low: 1, near: 2, ok: 3 };
+      const byStatus = order[getRestockStatus(a).key] - order[getRestockStatus(b).key];
+      if (byStatus !== 0) return byStatus;
       const byQty = safeNumber(a?.quantity) - safeNumber(b?.quantity);
       if (byQty !== 0) return byQty;
       return safeNumber(b?.createdAt) - safeNumber(a?.createdAt);
@@ -1293,20 +1360,29 @@ function renderRestockQueue() {
     const key = getProductKey(product);
     const qty = safeNumber(product?.quantity);
     const threshold = safeNumber(product?.lowStockThreshold, PRODUCT_LOW_STOCK);
-    const stock = stockLabel(product);
+    const stock = getRestockStatus(product);
     const idLabel = getDisplayProductId(product) || "-";
+    const price = formatCurrency(safeNumber(product?.price || 0));
+    const hitDate = formatRestockDateTime(getRestockHitTimestamp(product));
+    const categoryIcon = getCategoryDisplayIcon(category);
     return `
       <div class="restock-item">
         <div class="restock-item-main">
           <div class="restock-item-title">${name}</div>
-          <div class="restock-item-meta">
-            <span><i class="bi bi-tags"></i>${category}</span>
-            <span><i class="bi bi-upc-scan"></i>${idLabel}</span>
-            <span><i class="bi bi-bag-check"></i>Need refill soon</span>
+          <div class="restock-item-top">
+            <span class="tag-pill restock-category-chip"><i class="bi ${categoryIcon}"></i>${category}</span>
+            <span class="tag-pill"><i class="bi bi-upc-scan"></i>${idLabel}</span>
+            <span class="tag-pill"><i class="bi bi-cash-coin"></i>${price}</span>
+            <span class="tag-pill ${stock.className}">${stock.label}</span>
+          </div>
+          <div class="restock-item-subline">
+            <span><i class="bi bi-clock-history me-1"></i>Hit: ${hitDate}</span>
+            <span><i class="bi bi-bag-check me-1"></i>${qty <= 0 ? "Re-stock now" : "Need refill soon"}</span>
+            <span><i class="bi bi-box-seam me-1"></i>Threshold ${threshold}</span>
           </div>
         </div>
         <div class="restock-item-side">
-          <span class="restock-qty-pill ${qty <= 0 ? "bg-soft-danger text-danger-soft" : "bg-soft-warning text-warning-soft"}">Qty ${qty} / ${threshold}</span>
+          <span class="restock-qty-pill ${qty <= 0 ? "bg-soft-danger text-danger-soft" : qty <= threshold ? "bg-soft-warning text-warning-soft" : "bg-soft-info text-info-soft"}">Qty ${qty} / ${threshold}</span>
           <button class="btn btn-outline-primary restock-eye-btn" data-action="restock-view" data-id="${key}" type="button" title="View full details">
             <i class="bi bi-eye"></i>
           </button>
@@ -1732,6 +1808,24 @@ async function handleCardAction(action, key, button = null) {
 }
 
 
+
+function wireGlobalModalEnterSubmit() {
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.tagName === "TEXTAREA") return;
+    if (target.closest(".category-panel")) return;
+    const modal = target.closest(".modal.show");
+    if (!modal) return;
+    const button = modal.querySelector(".modal-footer .btn.btn-primary, .modal-footer [data-default-submit='true']");
+    if (button && !button.disabled) {
+      event.preventDefault();
+      button.click();
+    }
+  });
+}
+
 function bindPageActions() {
   document.addEventListener("click", async (event) => {
     const target = event.target instanceof HTMLElement ? event.target : null;
@@ -1851,6 +1945,7 @@ function initProductPage() {
   state.productRows = nodes.productRowsFilter?.value || "5";
   state.trashDateFilter = nodes.trashDateFilter?.value || state.trashDateFilter || "week";
   bindPageActions();
+  wireGlobalModalEnterSubmit();
   renderCartButtonCount();
   window.addEventListener("app:open-cart", openCartModal);
 
